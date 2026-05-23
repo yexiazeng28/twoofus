@@ -351,7 +351,8 @@
         let notificationsDB = JSON.parse(localStorage.getItem('two_us_notifications')) || {};
         let storiesDB = JSON.parse(localStorage.getItem('two_us_stories')) || [];
 
-        let currentUserId = null;
+        // Check for active logged-in user key from localStorage or fallback to null
+        let currentUserId = localStorage.getItem('two_us_active_user') || null;
         let activeBrowsingTargetKey = null;
         let activeChatRecipientKey = null;
         let currentOpenAlbumName = null;
@@ -417,6 +418,7 @@
             commitToDisk();
             alert("Profile registered successfully!");
             currentUserId = newId;
+            localStorage.setItem('two_us_active_user', newId); // Save session on register
             initializeSessionState();
         }
 
@@ -445,6 +447,7 @@
             if(!notificationsDB[currentUserId]) notificationsDB[currentUserId] = [];
             
             commitToDisk();
+            localStorage.setItem('two_us_active_user', targetUser.id); // Save session on login
             initializeSessionState();
         }
 
@@ -471,6 +474,9 @@
                 usersDB[currentUserId].isOnline = false;
             }
             commitToDisk();
+            
+            localStorage.removeItem('two_us_active_user'); // Clear session on logout
+            
             currentUserId = null;
             activeBrowsingTargetKey = null;
             activeChatRecipientKey = null;
@@ -1323,6 +1329,11 @@
             if (globalSrc && searchDrop && !globalSrc.contains(e.target)) searchDrop.classList.add('hidden');
             if (notifDrop && !notifDrop.contains(e.target)) notifDrop.classList.add('hidden');
         });
+
+        // Automatically restore session layout if the active user ID is validated on refresh
+        if (currentUserId && usersDB[currentUserId]) {
+            initializeSessionState();
+        }
     </script>
 </body>
 </html>
