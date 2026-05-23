@@ -2,39 +2,24 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TwoOfUs Network // Social Connection Hub</title>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Smooth scrolling and prevent horizontal shifting on mobile */
-        html, body {
-            overflow-x: hidden;
-            -webkit-tap-highlight-color: transparent;
-        }
-        /* Custom scrollbar for chat stream */
-        .custom-scrollbar::-webkit-scrollbar {
-            width: 4px;
-        }
-        .custom-scrollbar::-webkit-scrollbar-track {
-            background: transparent;
-        }
-        .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: #CBD5E1;
-            border-radius: 10px;
-        }
-    </style>
 </head>
-<body class="bg-[#F0F2F5] font-sans antialiased text-gray-900 pb-24 md:pb-12">
+<body class="bg-[#F0F2F5] font-sans antialiased text-gray-900 pb-12">
 
     <div id="lightbox-overlay" class="fixed inset-0 bg-black/95 z-[300] flex flex-col items-center justify-center p-4 hidden">
         <button onclick="closeLightbox()" class="absolute top-4 right-4 text-white hover:text-gray-300 text-3xl cursor-pointer p-2 z-[310]" title="Close Viewer">
             <i class="fa-solid fa-xmark"></i>
         </button>
+        
         <div class="max-w-3xl w-full flex flex-col items-center">
-            <img id="lightbox-img" src="" class="max-h-[65vh] max-w-full rounded-lg object-contain shadow-2xl border border-white/10">
+            <img id="lightbox-img" src="" class="max-h-[70vh] max-w-full rounded-lg object-contain shadow-2xl border border-white/10">
+            
             <div class="w-full max-w-xl mt-4 bg-white/10 backdrop-blur-md p-4 rounded-xl text-white text-center relative border border-white/10">
-                <p id="lightbox-caption" class="text-xs italic font-medium">No caption registered.</p>
+                <p id="lightbox-caption" class="text-sm italic font-medium">No caption registered.</p>
+                
                 <div id="lightbox-owner-controls" class="mt-3 pt-3 border-t border-white/10 flex justify-center space-x-2 hidden">
                     <button onclick="triggerEditCaption()" class="bg-blue-600 hover:bg-blue-700 text-white font-bold text-[11px] px-3 py-1.5 rounded-lg transition-all cursor-pointer">
                         <i class="fa-solid fa-pen-to-square mr-1"></i> Edit Caption
@@ -96,26 +81,32 @@
     </div>
 
     <nav class="bg-white shadow-sm sticky top-0 z-50 px-4 py-2 flex justify-between items-center border-b border-gray-200">
-        <div class="flex items-center space-x-3 flex-1 min-w-0">
-            <div class="flex items-center space-x-1.5 cursor-pointer shrink-0" onclick="resetToHome()">
-                <div class="bg-[#1877F2] text-white p-2 rounded-full w-9 h-9 flex items-center justify-center font-bold text-lg relative">
-                    f<i class="fa-solid fa-heart text-[8px] text-red-400 absolute bottom-0 right-0 bg-white rounded-full p-0.5"></i>
+        <div class="flex items-center space-x-4 flex-1">
+            <div class="flex items-center space-x-2 cursor-pointer shrink-0" onclick="resetToHome()">
+                <div class="bg-[#1877F2] text-white p-2 rounded-full w-10 h-10 flex items-center justify-center font-bold text-xl relative">
+                    f<i class="fa-solid fa-heart text-[10px] text-red-400 absolute bottom-0 right-0 bg-white rounded-full p-0.5"></i>
                 </div>
-                <span class="font-bold text-md text-gray-800 hidden sm:inline">two<span class="text-[#1877F2]">of</span>us</span>
+                <span class="font-bold text-xl text-gray-800 hidden md:inline">two<span class="text-[#1877F2]">of</span>us</span>
             </div>
 
-            <div class="relative w-full max-w-[180px] sm:max-w-xs">
-                <div class="absolute inset-y-0 left-0 pl-2.5 flex items-center pointer-events-none text-gray-400">
-                    <i class="fa-solid fa-magnifying-glass text-[10px]"></i>
+            <div class="relative w-full max-w-xs">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none text-gray-400">
+                    <i class="fa-solid fa-magnifying-glass text-xs"></i>
                 </div>
-                <input type="text" id="global-search" oninput="handleSearch(this.value)" placeholder="Search..." class="w-full bg-gray-100 rounded-full pl-7 pr-3 py-1 text-xs focus:outline-none focus:ring-2 focus:ring-[#1877F2]">
+                <input type="text" id="global-search" oninput="handleSearch(this.value)" placeholder="Search profiles..." class="w-full bg-gray-100 rounded-full pl-9 pr-4 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-[#1877F2]">
                 <div id="search-dropdown" class="absolute left-0 right-0 mt-2 bg-white rounded-xl shadow-xl border border-gray-100 hidden overflow-hidden z-50">
                     <div id="search-results-box" class="max-h-60 overflow-y-auto text-xs py-1"></div>
                 </div>
             </div>
         </div>
 
-        <div class="flex items-center space-x-2 bg-gray-100 p-1 rounded-full pr-2.5 shrink-0">
+        <div class="flex space-x-1 sm:space-x-4 px-2">
+            <button id="tab-timeline" onclick="switchTab('timeline')" class="nav-tab text-[#1877F2] border-b-4 border-[#1877F2] px-4 py-2 text-lg cursor-pointer"><i class="fa-solid fa-house"></i></button>
+            <button id="tab-gallery" onclick="switchTab('gallery')" class="nav-tab text-gray-500 hover:bg-gray-100 rounded-lg px-4 py-2 text-lg cursor-pointer"><i class="fa-solid fa-images"></i></button>
+            <button id="tab-messages" onclick="switchTab('messages')" class="nav-tab text-gray-500 hover:bg-gray-100 rounded-lg px-4 py-2 text-lg cursor-pointer"><i class="fa-solid fa-message"></i></button>
+        </div>
+
+        <div class="flex items-center space-x-2 bg-gray-100 p-1.5 rounded-full pr-3 relative shrink-0">
             <div class="relative">
                 <button onclick="toggleNotificationDropdown(event)" class="text-gray-500 hover:text-gray-700 p-1.5 rounded-full hover:bg-gray-200 cursor-pointer relative">
                     <i class="fa-solid fa-bell text-xs"></i>
@@ -134,13 +125,13 @@
 
             <div class="h-4 w-[1px] bg-gray-300 mx-0.5"></div>
 
-            <div onclick="resetToHome()" class="flex items-center space-x-1.5 cursor-pointer group">
-                <img id="navbar-avatar" src="" class="w-7 h-7 rounded-full object-cover bg-gray-300 border border-white">
-                <span id="navbar-username" class="font-bold text-xs max-w-[60px] truncate hidden sm:inline text-gray-700 group-hover:text-[#1877F2]">User</span>
+            <div onclick="resetToHome()" class="flex items-center space-x-2 cursor-pointer group">
+                <img id="navbar-avatar" src="" class="w-8 h-8 rounded-full object-cover bg-gray-300 group-hover:opacity-85 transition-opacity">
+                <span id="navbar-username" class="font-bold text-xs hidden sm:inline text-gray-700 group-hover:text-[#1877F2] transition-colors">User</span>
             </div>
-            <div class="h-4 w-[1px] bg-gray-300 mx-0.5"></div>
-            <button onclick="toggleSettingsModal()" class="text-gray-500 p-1 rounded-full hover:bg-gray-200 cursor-pointer"><i class="fa-solid fa-gear text-xs"></i></button>
-            <button onclick="executeLogout()" class="text-red-500 p-1 rounded-full hover:bg-red-50 cursor-pointer"><i class="fa-solid fa-power-off text-xs"></i></button>
+            <div class="h-4 w-[1px] bg-gray-300 mx-1 hidden sm:block"></div>
+            <button onclick="toggleSettingsModal()" class="text-gray-500 hover:text-gray-700 p-1 rounded-full hover:bg-gray-200 cursor-pointer"><i class="fa-solid fa-gear text-xs"></i></button>
+            <button onclick="executeLogout()" class="text-red-500 hover:text-red-700 p-1 rounded-full hover:bg-red-50 cursor-pointer"><i class="fa-solid fa-power-off text-xs"></i></button>
         </div>
     </nav>
 
@@ -150,7 +141,7 @@
                 <h3 class="font-bold text-gray-800 text-sm"><i class="fa-solid fa-user-gear text-blue-500 mr-2"></i>Edit Profile Settings</h3>
                 <button onclick="toggleSettingsModal()" class="text-gray-400 hover:text-gray-600 text-lg cursor-pointer">&times;</button>
             </div>
-            <div class="p-6 space-y-4 max-h-[60vh] overflow-y-auto">
+            <div class="p-6 space-y-4 max-h-[70vh] overflow-y-auto">
                 <div>
                     <label class="block text-xs font-bold text-gray-500 uppercase mb-2">Display Avatar Photo</label>
                     <div class="flex items-center space-x-4">
@@ -185,9 +176,9 @@
         </div>
     </div>
 
-    <main class="max-w-6xl mx-auto mt-3 md:mt-6 px-3 grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
+    <main class="max-w-6xl mx-auto mt-6 px-4 grid grid-cols-1 lg:grid-cols-4 gap-6">
         
-        <aside class="space-y-4 lg:col-span-1 order-2 lg:order-1">
+        <aside class="space-y-4 lg:col-span-1">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                 <div class="text-center pb-3 border-b border-gray-100 flex flex-col items-center">
                     <div class="relative">
@@ -207,40 +198,45 @@
                         </button>
                         <div class="min-w-0 flex-1">
                             <p id="music-track-title" class="text-[11px] font-bold truncate">No track configured</p>
-                            <p id="music-track-status" class="text-[9px] text-gray-400">Tap screen to activate player</p>
+                            <p id="music-track-status" class="text-[9px] text-gray-400">Add an MP3 URL in Settings</p>
                         </div>
                     </div>
                     <audio id="global-profile-audio" loop></audio>
                 </div>
+
+                <div class="mt-3 p-3 bg-blue-50 text-blue-700 rounded-xl border border-blue-100 text-center">
+                    <p class="text-[10px] font-bold uppercase tracking-wide opacity-75">Session Security</p>
+                    <p class="text-sm font-black my-0.5">Local Encrypted</p>
+                </div>
             </div>
         </aside>
 
-        <section class="lg:col-span-2 space-y-4 order-1 lg:order-2">
+        <section class="lg:col-span-2 space-y-4">
             
             <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-                <div class="relative h-32 sm:h-40 bg-gradient-to-r from-slate-700 to-slate-800 group/cover">
+                <div class="relative h-40 bg-gradient-to-r from-slate-700 to-slate-800 group/cover">
                     <img id="profile-cover-banner" src="https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800" class="w-full h-full object-cover">
                     <button onclick="toggleSettingsModal()" id="cover-edit-badge" class="absolute bottom-3 right-3 bg-black/60 hover:bg-black/80 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg border border-white/20 transition-all cursor-pointer">
-                        <i class="fa-solid fa-camera mr-1"></i> Edit Cover
+                        <i class="fa-solid fa-camera mr-1"></i> Edit Cover Photo
                     </button>
                 </div>
-                <div class="px-4 sm:px-6 pb-4 pt-2 flex items-center justify-between -mt-8 sm:-mt-6 relative z-10 gap-3">
-                    <div class="flex items-end space-x-3 text-left">
-                        <img id="profile-header-avatar" src="" class="w-16 h-16 sm:w-20 sm:h-20 rounded-full object-cover border-4 border-white bg-gray-200 shadow-md">
+                <div class="px-6 pb-4 pt-3 flex flex-col sm:flex-row items-center sm:items-end justify-between -mt-10 sm:-mt-6 relative z-10 gap-3">
+                    <div class="flex flex-col sm:flex-row items-center sm:items-end space-y-2 sm:space-y-0 sm:space-x-4 text-center sm:text-left">
+                        <img id="profile-header-avatar" src="" class="w-20 h-20 rounded-full object-cover border-4 border-white bg-gray-200 shadow-md">
                         <div class="mb-1">
-                            <h2 id="profile-header-name" class="font-black text-md sm:text-lg text-gray-900 leading-tight">...</h2>
-                            <p id="profile-header-title" class="text-[11px] sm:text-xs text-gray-500 font-medium">...</p>
+                            <h2 id="profile-header-name" class="font-black text-lg text-gray-900 leading-tight">...</h2>
+                            <p id="profile-header-title" class="text-xs text-gray-500 font-medium">...</p>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="bg-white p-3 rounded-xl shadow-sm border border-gray-200">
-                <p class="text-[10px] font-black uppercase text-gray-400 tracking-wider mb-2 px-1"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Stories // My Day</p>
-                <div class="flex items-center space-x-2 overflow-x-auto pb-1 custom-scrollbar" id="stories-tray-wrapper">
-                    <div class="w-16 h-24 sm:w-20 sm:h-28 bg-gray-100 rounded-lg border border-dashed border-gray-300 flex flex-col items-center justify-center relative flex-shrink-0 cursor-pointer hover:bg-gray-200 transition-all">
+                <p class="text-[10px] font-black uppercase text-gray-400 tracking-wider mb-2.5 px-1"><i class="fa-solid fa-bolt text-amber-500 mr-1"></i> Story Timeline // My Day</p>
+                <div class="flex items-center space-x-2 overflow-x-auto pb-1" id="stories-tray-wrapper">
+                    <div class="w-20 h-28 bg-gray-100 rounded-lg border border-dashed border-gray-300 flex flex-col items-center justify-center relative flex-shrink-0 cursor-pointer hover:bg-gray-200 transition-all">
                         <input type="file" accept="image/*" onchange="createNewStory(event)" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer">
-                        <i class="fa-solid fa-circle-plus text-md text-[#1877F2] mb-0.5"></i>
+                        <i class="fa-solid fa-circle-plus text-lg text-[#1877F2] mb-1"></i>
                         <span class="text-[9px] font-black text-gray-600 text-center">Add Day</span>
                     </div>
                     <div id="dynamic-stories-list" class="flex space-x-2"></div>
@@ -248,19 +244,19 @@
             </div>
 
             <div id="viewing-external-banner" class="bg-amber-50 border border-amber-200 text-amber-800 text-xs p-3 rounded-xl flex justify-between items-center hidden">
-                <p><i class="fa-solid fa-eye mr-1"></i> Browsing layout belonging to <span id="external-banner-name" class="font-bold">...</span></p>
-                <button onclick="resetToHome()" class="bg-amber-600 text-white px-2 py-1 rounded font-bold text-[10px] hover:bg-amber-700 transition-all cursor-pointer">Return Home</button>
+                <p><i class="fa-solid fa-eye mr-1"></i> Browsing external layout node belonging to <span id="external-banner-name" class="font-bold">...</span></p>
+                <button onclick="resetToHome()" class="bg-amber-600 text-white px-2 py-1 rounded font-bold text-[11px] hover:bg-amber-700 transition-all cursor-pointer">Return Home</button>
             </div>
 
             <div id="content-timeline" class="tab-content space-y-4">
                 <div id="timeline-create-box" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                     <div class="flex space-x-2 border-b border-gray-200 pb-3">
-                        <img id="feed-post-avatar" src="" onclick="resetToHome()" class="w-9 h-9 rounded-full object-cover bg-gray-100 border cursor-pointer shrink-0">
-                        <input id="post-input" type="text" placeholder="Publish an update to your timeline..." class="w-full bg-gray-100 rounded-full px-4 text-xs focus:outline-none focus:ring-2 focus:ring-[#1877F2]">
+                        <img id="feed-post-avatar" src="" onclick="resetToHome()" class="w-10 h-10 rounded-full object-cover bg-gray-100 border cursor-pointer hover:opacity-85 transition-opacity">
+                        <input id="post-input" type="text" placeholder="Publish an update to your timeline..." class="w-full bg-gray-100 rounded-full px-4 text-sm focus:outline-none focus:ring-2 focus:ring-[#1877F2]">
                     </div>
                     <div class="flex justify-between items-center pt-2">
-                        <span class="text-[10px] text-gray-400 font-medium"><i class="fa-solid fa-shield"></i> Clean Private Instance</span>
-                        <button onclick="addNewPost()" class="bg-[#1877F2] text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600 cursor-pointer">Publish</button>
+                        <span class="text-[11px] text-gray-400 font-medium"><i class="fa-solid fa-shield"></i> Clean Private Instance</span>
+                        <button onclick="addNewPost()" class="bg-[#1877F2] text-white px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-blue-600 cursor-pointer">Publish Post</button>
                     </div>
                 </div>
                 <div id="dynamic-posts" class="space-y-4"></div>
@@ -272,42 +268,42 @@
                         <h2 class="font-bold text-sm text-gray-800"><i class="fa-solid fa-folder-open text-amber-500 mr-2"></i>Vault Folders</h2>
                         <button id="add-album-btn" onclick="triggerCreateAlbum()" class="bg-slate-800 hover:bg-slate-950 text-white text-[10px] font-bold px-2.5 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-folder-plus mr-1"></i> New Folder</button>
                     </div>
-                    <div id="album-directory-grid" class="grid grid-cols-2 gap-3"></div>
+                    <div id="album-directory-grid" class="grid grid-cols-2 gap-4"></div>
                 </div>
                 
                 <div id="album-inspector" class="bg-white p-4 rounded-xl shadow-sm border border-gray-200 hidden">
                     <div class="flex justify-between items-center border-b border-gray-200 pb-3 mb-4">
-                        <button onclick="closeAlbumInspector()" class="text-[10px] bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2 py-1 rounded-lg cursor-pointer"><i class="fa-solid fa-arrow-left mr-1"></i> Folders</button>
-                        <h3 id="inspector-title" class="font-black text-gray-800 text-xs truncate max-w-[150px]">...</h3>
+                        <button onclick="closeAlbumInspector()" class="text-[11px] bg-gray-100 hover:bg-gray-200 text-gray-700 font-bold px-2.5 py-1.5 rounded-lg cursor-pointer"><i class="fa-solid fa-arrow-left mr-1"></i> Folders</button>
+                        <h3 id="inspector-title" class="font-black text-gray-800 text-xs">...</h3>
                     </div>
                     
-                    <div id="album-uploader-input-zone" class="mb-4 bg-slate-50 border-2 border-dashed border-slate-300 p-4 rounded-xl text-center relative">
+                    <div id="album-uploader-input-zone" class="mb-4 bg-slate-50 border-2 border-dashed border-slate-300 p-4 rounded-xl text-center relative hover:bg-slate-100 transition-all">
                         <input type="file" accept="image/*" onchange="handleImageUpload(event)" class="absolute inset-0 opacity-0 w-full h-full cursor-pointer">
                         <p class="text-xs text-slate-600 font-bold"><i class="fa-solid fa-cloud-arrow-up text-blue-500 text-sm block mb-1"></i>Upload Asset to Vault</p>
                     </div>
-                    <div id="inspector-grid" class="grid grid-cols-3 gap-2"></div>
+                    <div id="inspector-grid" class="grid grid-cols-3 gap-3"></div>
                 </div>
             </div>
 
             <div id="content-messages" class="tab-content hidden">
-                <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-[70vh] lg:h-[480px] flex flex-col overflow-hidden">
+                <div class="bg-white rounded-xl shadow-sm border border-gray-200 h-[480px] flex flex-col overflow-hidden">
                     <div class="p-3 border-b border-gray-200 bg-gray-50 flex items-center justify-between">
                         <div class="flex items-center space-x-2">
                             <img id="chat-header-avatar" src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100" class="w-7 h-7 rounded-full object-cover bg-gray-200">
                             <div>
-                                <p id="chat-header-title" class="font-bold text-xs text-slate-800">Select channel</p>
+                                <p id="chat-header-title" class="font-bold text-xs text-slate-800">Select recipient channel</p>
                                 <p id="chat-header-status" class="text-[9px] text-gray-400">Offline Room Terminal</p>
                             </div>
                         </div>
                     </div>
-                    <div class="flex-1 p-3 overflow-y-auto space-y-3 bg-[#F4F6F9] custom-scrollbar" id="chat-stream">
+                    <div class="flex-1 p-4 overflow-y-auto space-y-3 bg-[#F4F6F9]" id="chat-stream">
                         <div class="text-center py-12 text-gray-400 italic text-xs">
                             <i class="fa-solid fa-comments text-xl block mb-1 text-gray-300"></i>
                             Select an added user from the network directory to begin messaging.
                         </div>
                     </div>
                     <div class="p-2 border-t border-gray-200 bg-white flex gap-1">
-                        <input id="chat-input" type="text" disabled placeholder="Select terminal connection..." class="flex-1 bg-gray-100 rounded-full px-3 py-1.5 text-xs focus:outline-none disabled:opacity-50" onkeydown="if(event.key === 'Enter') sendMessage()">
+                        <input id="chat-input" type="text" disabled placeholder="Select terminal connection..." class="flex-1 bg-gray-100 rounded-full px-4 text-xs focus:outline-none disabled:opacity-50" onkeydown="if(event.key === 'Enter') sendMessage()">
                         <button id="chat-send-btn" disabled onclick="sendMessage()" class="bg-[#1877F2] text-white w-8 h-8 rounded-full flex items-center justify-center text-xs cursor-pointer disabled:opacity-50"><i class="fa-solid fa-paper-plane"></i></button>
                     </div>
                 </div>
@@ -315,53 +311,35 @@
 
         </section>
 
-        <aside class="space-y-4 lg:col-span-1 order-3">
+        <aside class="space-y-4 lg:col-span-1">
             <div class="bg-white p-4 rounded-xl shadow-sm border border-gray-200">
                 <div class="flex items-center justify-between border-b border-gray-100 pb-2 mb-3">
                     <h3 class="font-black text-[10px] uppercase tracking-wider text-gray-500 flex items-center gap-1">
                         <span class="w-1.5 h-1.5 bg-green-500 rounded-full animate-pulse"></span> Network Directory
                     </h3>
-                    <span id="online-counter-badge" class="bg-green-100 text-green-700 font-bold text-[9px] px-2 py-0.5 rounded-full">0 Active</span>
+                    <span id="online-counter-badge" class="bg-green-100 text-green-700 font-bold text-[9px] px-2 py-0.5 rounded-full">0 Online</span>
                 </div>
-                <div class="space-y-2" id="realtime-presence-directory"></div>
+                <div class="space-y-2.5" id="realtime-presence-directory"></div>
             </div>
         </aside>
 
     </main>
 
-    <div class="fixed bottom-0 inset-x-0 bg-white border-t border-gray-200 py-2 px-6 flex justify-around items-center z-50 lg:hidden shadow-lg">
-        <button id="mob-tab-timeline" onclick="switchTab('timeline')" class="mob-nav-tab text-[#1877F2] flex flex-col items-center p-1 cursor-pointer">
-            <i class="fa-solid fa-house text-lg"></i>
-            <span class="text-[9px] font-bold mt-0.5">Home</span>
-        </button>
-        <button id="mob-tab-gallery" onclick="switchTab('gallery')" class="mob-nav-tab text-gray-400 flex flex-col items-center p-1 cursor-pointer">
-            <i class="fa-solid fa-images text-lg"></i>
-            <span class="text-[9px] font-bold mt-0.5">Vault</span>
-        </button>
-        <button id="mob-tab-messages" onclick="switchTab('messages')" class="mob-nav-tab text-gray-400 flex flex-col items-center p-1 cursor-pointer">
-            <i class="fa-solid fa-message text-lg"></i>
-            <span class="text-[9px] font-bold mt-0.5">Chat</span>
-        </button>
-    </div>
-
     <script>
+        // LOAD EXISTING DATABASES SAFELY FROM LOCALSTORAGE WITHOUT WIPING THEM
         let usersDB = JSON.parse(localStorage.getItem('two_us_users')) || {};
         let postsDB = JSON.parse(localStorage.getItem('two_us_posts')) || [];
         let messagesDB = JSON.parse(localStorage.getItem('two_us_messages')) || {};
         let notificationsDB = JSON.parse(localStorage.getItem('two_us_notifications')) || {};
         let storiesDB = JSON.parse(localStorage.getItem('two_us_stories')) || [];
 
-        // Check for an active session ID in local storage on page bootup
-        let currentUserId = localStorage.getItem('two_us_active_session_id') || null;
+        let currentUserId = null;
         let activeBrowsingTargetKey = null;
         let activeChatRecipientKey = null;
         let currentOpenAlbumName = null;
         let localProfilePicBuffer = null;
         let localCoverPicBuffer = null;
         let selectedLightboxPhotoIndex = null;
-        
-        // Track whether user interacted with document to bypass browser audio locking policies
-        let userHasInteracted = false;
 
         function commitToDisk() {
             localStorage.setItem('two_us_users', JSON.stringify(usersDB));
@@ -369,30 +347,14 @@
             localStorage.setItem('two_us_messages', JSON.stringify(messagesDB));
             localStorage.setItem('two_us_notifications', JSON.stringify(notificationsDB));
             localStorage.setItem('two_us_stories', JSON.stringify(storiesDB));
-            // Keep the active session ID committed to the storage desk
-            localStorage.setItem('two_us_active_session_id', currentUserId || "");
         }
-
-        // Listen for first screen gesture to automatically trigger loaded audio streams smoothly
-        window.addEventListener('click', function unlockAudioEngine() {
-            if (userHasInteracted) return;
-            userHasInteracted = true;
-            
-            // If logged in, sync/play the track now that interaction is clear
-            if (currentUserId) {
-                const targetScopeKey = activeBrowsingTargetKey || currentUserId;
-                if (usersDB[targetScopeKey]) {
-                    handleProfileMusicSynchronization(usersDB[targetScopeKey]);
-                }
-            }
-            window.removeEventListener('click', unlockAudioEngine);
-        }, { passive: true });
 
         function toggleAuthViews(showRegister) {
             document.getElementById('login-form-pane').classList.toggle('hidden', showRegister);
             document.getElementById('register-form-pane').classList.toggle('hidden', !showRegister);
         }
 
+        // REGISTRATION 
         function processRegistration() {
             const name = document.getElementById('reg-name').value.trim();
             const title = document.getElementById('reg-title').value.trim();
@@ -400,7 +362,7 @@
             const pass = document.getElementById('reg-pass').value.trim();
 
             if(!name || !title || !email || !pass) {
-                alert("Please fill in all fields.");
+                alert("Please fill in all profile fields to complete registration.");
                 return;
             }
 
@@ -409,7 +371,7 @@
                 id: newId, name: name, title: title, email: email, password: pass,
                 avatar: "https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=120", 
                 cover: "https://images.unsplash.com/photo-1707343843437-caacff5cfa74?w=800",
-                bio: "Welcome to my profile space! Modify this in Settings.",
+                bio: "Welcome to my profile space! Click settings to modify this statement.",
                 musicUrl: "", 
                 isOnline: true,
                 albums: { "Shared Vault": [] }
@@ -417,24 +379,25 @@
 
             if(!notificationsDB[newId]) notificationsDB[newId] = [];
 
-            currentUserId = newId;
             commitToDisk();
-            alert("Profile registered successfully!");
+            alert("Account setup complete!");
+            currentUserId = newId;
             initializeSessionState();
         }
 
+        // LOGIN
         function processLogin() {
             const email = document.getElementById('login-email').value.trim().toLowerCase();
             const pass = document.getElementById('login-pass').value.trim();
 
             if(!email || !pass) {
-                alert("Please complete login fields.");
+                alert("Please complete login parameters.");
                 return;
             }
 
             const targetUser = Object.values(usersDB).find(u => u.email === email);
             if(!targetUser) {
-                alert("No user records found. Choose 'Create Account' to build a layout profile!");
+                alert("No user records found. Please choose 'Create Account' first to set up your profile!");
                 return;
             }
 
@@ -473,8 +436,8 @@
             if(currentUserId && usersDB[currentUserId]) {
                 usersDB[currentUserId].isOnline = false;
             }
+            commitToDisk();
             currentUserId = null;
-            commitToDisk(); // This clears out the active session payload from local storage logs
             activeBrowsingTargetKey = null;
             activeChatRecipientKey = null;
 
@@ -527,9 +490,11 @@
             renderNotifications();
             renderStoriesTray();
             
+            // Trigger background music synchronization layout packet
             handleProfileMusicSynchronization(scopeData);
         }
 
+        // BACKGROUND TIMELINE AUDIO LOGIC
         function handleProfileMusicSynchronization(scopeData) {
             const player = document.getElementById('global-profile-audio');
             const titleLabel = document.getElementById('music-track-title');
@@ -537,23 +502,20 @@
             const playBtn = document.getElementById('music-play-btn');
 
             if(scopeData.musicUrl) {
+                // If a new track source needs mounting
                 if(player.src !== scopeData.musicUrl) {
                     player.src = scopeData.musicUrl;
                     player.load();
                 }
                 titleLabel.innerText = `${scopeData.name}'s Choice Track`;
+                statusLabel.innerText = "Stalking Profile Vibe...";
                 
-                if (!userHasInteracted) {
-                    statusLabel.innerText = "Tap screen anywhere to load";
-                    playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
-                    return;
-                }
-
+                // Attempt old-school background playback
                 player.play().then(() => {
-                    statusLabel.innerText = "Vibe synchronized online...";
                     playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
                 }).catch(err => {
-                    statusLabel.innerText = "Tap play to start";
+                    // Modern browsers block audio until click interaction
+                    statusLabel.innerText = "Click play to activate vibe";
                     playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
                 });
             } else {
@@ -570,18 +532,14 @@
             const statusLabel = document.getElementById('music-track-status');
 
             if(!player.src || player.src.includes(window.location.hostname) && player.networkState === 3) {
-                alert("No sound track link found. Paste an MP3 link in profile settings first!");
+                alert("No sound link is active. Add an MP3 URL to your profile configuration settings!");
                 return;
             }
 
-            // Force interaction tag validation flag instantly
-            userHasInteracted = true;
-
             if(player.paused) {
-                player.play().then(() => {
-                    playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
-                    statusLabel.innerText = "Playing profile music...";
-                }).catch(() => alert("Could not play track stream resource format. Check your URL."));
+                player.play();
+                playBtn.innerHTML = `<i class="fa-solid fa-pause"></i>`;
+                statusLabel.innerText = "Playing profile rhythm...";
             } else {
                 player.pause();
                 playBtn.innerHTML = `<i class="fa-solid fa-play"></i>`;
@@ -595,6 +553,7 @@
             player.src = "";
         }
 
+        // STORIES LAYOUT
         function createNewStory(e) {
             const file = e.target.files[0];
             if(!file || !currentUserId) return;
@@ -613,6 +572,10 @@
             reader.readAsDataURL(file);
         }
 
+        document.addEventListener("DOMContentLoaded", function() {
+            renderPresenceDirectory();
+        });
+
         function renderStoriesTray() {
             const container = document.getElementById('dynamic-stories-list');
             if(!container) return;
@@ -624,12 +587,12 @@
                 if(!owner) return;
 
                 container.innerHTML += `
-                    <div onclick="viewStory('${story.id}')" class="w-16 h-24 sm:w-20 sm:h-28 rounded-lg overflow-hidden relative flex-shrink-0 cursor-pointer border border-gray-200 bg-neutral-800 shadow-3xs">
+                    <div onclick="viewStory('${story.id}')" class="w-20 h-28 rounded-lg overflow-hidden relative flex-shrink-0 cursor-pointer border border-gray-200 bg-neutral-800 shadow-3xs hover:scale-105 transition-transform">
                         <img src="${story.imageUrl}" class="w-full h-full object-cover opacity-85">
                         <div class="absolute top-1 left-1 p-0.5 bg-[#1877F2] rounded-full border border-white">
-                            <img src="${owner.avatar}" class="w-4 h-4 sm:w-5 sm:h-5 rounded-full object-cover">
+                            <img src="${owner.avatar}" class="w-5 h-5 rounded-full object-cover">
                         </div>
-                        <span class="absolute bottom-1 inset-x-1 text-[8px] sm:text-[9px] font-black text-white text-center truncate drop-shadow-md">${owner.name}</span>
+                        <span class="absolute bottom-1 inset-x-1 text-[9px] font-black text-white text-center truncate drop-shadow-md">${owner.name}</span>
                     </div>
                 `;
             });
@@ -649,6 +612,7 @@
 
         function closeStoryViewer() { document.getElementById('story-viewer-overlay').classList.add('hidden'); }
 
+        // TIMELINE
         function renderTimelineFeed() {
             const stream = document.getElementById('dynamic-posts');
             if(!stream) return;
@@ -679,7 +643,7 @@
                                 <p class="text-gray-700">${cmt.text}</p>
                             </div>
                             ${canDeleteComment ? `
-                                <button onclick="deleteComment('${post.id}', '${cmt.id}')" class="text-gray-400 hover:text-red-600 pl-2 cursor-pointer">
+                                <button onclick="deleteComment('${post.id}', '${cmt.id}')" class="text-gray-400 hover:text-red-600 pl-2 opacity-0 group-hover:opacity-100 transition-all cursor-pointer">
                                     <i class="fa-solid fa-trash text-[10px]"></i>
                                 </button>
                             ` : ''}
@@ -694,17 +658,21 @@
 
                 stream.innerHTML += `
                     <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden relative group/post">
-                        <div class="absolute top-4 right-4 flex space-x-1">
-                            ${isPostOwner ? `
-                                <button onclick="editPostText('${post.id}')" class="bg-gray-100 text-gray-600 text-[9px] font-bold px-1.5 py-0.5 rounded border cursor-pointer">Edit</button>
-                                <button onclick="deletePostText('${post.id}')" class="bg-gray-100 text-red-600 text-[9px] font-bold px-1.5 py-0.5 rounded border cursor-pointer">Delete</button>
-                            ` : ''}
-                        </div>
+                        ${isPostOwner ? `
+                            <div class="absolute top-4 right-4 flex space-x-1.5 opacity-0 group-hover/post:opacity-100 transition-all">
+                                <button onclick="editPostText('${post.id}')" class="bg-gray-100 hover:bg-blue-50 text-gray-600 hover:text-blue-600 text-[10px] font-bold px-2 py-1 rounded border border-gray-200 shadow-3xs cursor-pointer">
+                                    <i class="fa-solid fa-pen"></i> Edit
+                                </button>
+                                <button onclick="deletePostText('${post.id}')" class="bg-gray-100 hover:bg-red-50 text-gray-600 hover:text-red-600 text-[10px] font-bold px-2 py-1 rounded border border-gray-200 shadow-3xs cursor-pointer">
+                                    <i class="fa-solid fa-trash-can"></i> Delete
+                                </button>
+                            </div>
+                        ` : ''}
 
                         <div class="p-4 flex items-center space-x-3">
-                            <img src="${postAuthor.avatar}" onclick="browseToTargetProfile('${post.userId}')" class="w-9 h-9 rounded-full object-cover bg-gray-100 border cursor-pointer">
+                            <img src="${postAuthor.avatar}" onclick="browseToTargetProfile('${post.userId}')" class="w-9 h-9 rounded-full object-cover bg-gray-100 border cursor-pointer hover:opacity-85 transition-opacity">
                             <div>
-                                <h4 onclick="browseToTargetProfile('${post.userId}')" class="font-bold text-xs text-gray-900 cursor-pointer">${postAuthor.name}</h4>
+                                <h4 onclick="browseToTargetProfile('${post.userId}')" class="font-bold text-xs text-gray-900 cursor-pointer hover:text-[#1877F2] hover:underline">${postAuthor.name}</h4>
                                 <p class="text-[10px] text-gray-400">Timeline Node Space</p>
                             </div>
                         </div>
@@ -713,28 +681,28 @@
                             <p class="text-gray-800 text-xs leading-relaxed whitespace-pre-wrap">${post.text}</p>
                         </div>
 
-                        <div class="px-4 py-1 bg-gray-50 border-t border-b border-gray-100 flex items-center justify-between text-[11px]">
-                            <div class="flex space-x-1">
-                                <button onclick="triggerReaction('${post.id}', 'like')" class="flex items-center space-x-1 font-bold ${activeUserReactions.like ? 'text-blue-600' : 'text-gray-500'} p-1 rounded-md cursor-pointer">
-                                    <i class="fa-solid fa-thumbs-up"></i> <span>(${post.likes || 0})</span>
+                        <div class="px-4 py-2 bg-gray-50 border-t border-b border-gray-100 flex items-center justify-between text-xs">
+                            <div class="flex space-x-2">
+                                <button onclick="triggerReaction('${post.id}', 'like')" class="flex items-center space-x-1 font-bold ${activeUserReactions.like ? 'text-blue-600' : 'text-gray-500'} hover:bg-gray-200/50 px-2 py-1 rounded-md transition-all cursor-pointer">
+                                    <i class="fa-solid fa-thumbs-up"></i> <span>Like (${post.likes || 0})</span>
                                 </button>
-                                <button onclick="triggerReaction('${post.id}', 'heart')" class="flex items-center space-x-1 font-bold ${activeUserReactions.heart ? 'text-rose-600' : 'text-gray-500'} p-1 rounded-md cursor-pointer">
-                                    <i class="fa-solid fa-heart"></i> <span>(${post.hearts || 0})</span>
+                                <button onclick="triggerReaction('${post.id}', 'heart')" class="flex items-center space-x-1 font-bold ${activeUserReactions.heart ? 'text-rose-600' : 'text-gray-500'} hover:bg-gray-200/50 px-2 py-1 rounded-md transition-all cursor-pointer">
+                                    <i class="fa-solid fa-heart"></i> <span>Heart (${post.hearts || 0})</span>
                                 </button>
                             </div>
-                            <button onclick="triggerShareLink('${post.id}')" class="text-gray-500 text-[10px] font-bold p-1 cursor-pointer">
-                                <i class="fa-solid fa-share-nodes"></i> Link
+                            <button onclick="triggerShareLink('${post.id}')" class="text-gray-500 hover:text-[#1877F2] font-bold px-2 py-1 rounded-md cursor-pointer">
+                                <i class="fa-solid fa-share-nodes mr-1"></i>Copy Link
                             </button>
                         </div>
 
                         <div class="p-3 bg-white space-y-2">
-                            <div id="comments-box-stack-${post.id}" class="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar">
+                            <div id="comments-box-stack-${post.id}" class="space-y-1.5 max-h-40 overflow-y-auto">
                                 ${commentsSegmentMarkup}
                             </div>
                             
-                            <div class="flex gap-1.5 pt-2 border-t border-gray-100">
-                                <input id="comment-input-${post.id}" type="text" placeholder="Write a response..." class="flex-1 text-xs bg-gray-100 rounded-full px-3 py-1 focus:outline-none focus:ring-1 focus:ring-blue-500" onkeydown="if(event.key === 'Enter') addNewComment('${post.id}')">
-                                <button onclick="addNewComment('${post.id}')" class="bg-slate-800 text-white text-[10px] font-black px-3 py-1 rounded-full cursor-pointer">Reply</button>
+                            <div class="flex gap-1.5 mt-2 pt-2 border-t border-gray-100">
+                                <input id="comment-input-${post.id}" type="text" placeholder="Write a response..." class="flex-1 text-xs bg-gray-100 rounded-full px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-blue-500" onkeydown="if(event.key === 'Enter') addNewComment('${post.id}')">
+                                <button onclick="addNewComment('${post.id}')" class="bg-slate-800 hover:bg-slate-900 text-white text-[10px] font-black px-3 py-1 rounded-full transition-all cursor-pointer">Reply</button>
                             </div>
                         </div>
                     </div>
@@ -762,7 +730,7 @@
             });
 
             if(targetScopeId !== currentUserId) {
-                dispatchNotification(targetScopeId, `<b>${sessionUser.name}</b> posted to your timeline.`);
+                dispatchNotification(targetScopeId, `<b>${sessionUser.name}</b> added a post layout to your timeline.`);
             }
 
             input.value = '';
@@ -787,6 +755,7 @@
             renderTimelineFeed();
         }
 
+        // CMNT & REACTION
         function deleteComment(postId, commentId) {
             const post = postsDB.find(p => p.id === postId);
             if(!post) return;
@@ -808,7 +777,7 @@
                 if(userReactionMap.like) { post.likes = Math.max(0, post.likes - 1); userReactionMap.like = false; }
                 else { 
                     post.likes++; userReactionMap.like = true;
-                    if(post.userId !== currentUserId) dispatchNotification(post.userId, `<b>${sessionUser.name}</b> liked your timeline entry.`);
+                    if(post.userId !== currentUserId) dispatchNotification(post.userId, `<b>${sessionUser.name}</b> liked your post layout entry.`);
                 }
             } else if(type === 'heart') {
                 if(userReactionMap.heart) { post.hearts = Math.max(0, post.hearts - 1); userReactionMap.heart = false; }
@@ -838,7 +807,7 @@
             });
 
             if(post.userId !== currentUserId) {
-                dispatchNotification(post.userId, `<b>${sessionUser.name}</b> commented on your post.`);
+                dispatchNotification(post.userId, `<b>${sessionUser.name}</b> commented on your post thread.`);
             }
 
             input.value = '';
@@ -849,10 +818,11 @@
         function triggerShareLink(postId) {
             const generatedFakeLink = `${window.location.origin}/#share/post/${postId}`;
             navigator.clipboard.writeText(generatedFakeLink).then(() => {
-                alert(`Direct link copied:\n${generatedFakeLink}`);
+                alert(`Direct link target copied to memory:\n${generatedFakeLink}`);
             });
         }
 
+        // NOTIFICATIONS
         function dispatchNotification(recipientId, htmlMsg) {
             if(!notificationsDB[recipientId]) notificationsDB[recipientId] = [];
             notificationsDB[recipientId].unshift({
@@ -921,6 +891,7 @@
             }
         }
 
+        // ALBUMS / VAULT
         function renderMediaDirectory(albumsObject) {
             const grid = document.getElementById('album-directory-grid');
             if(!grid) return;
@@ -928,7 +899,7 @@
             closeAlbumInspector();
 
             if(!albumsObject || Object.keys(albumsObject).length === 0) {
-                grid.innerHTML = `<p class="col-span-2 text-center text-gray-400 italic py-6 text-xs">No vault media loaded.</p>`;
+                grid.innerHTML = `<p class="col-span-2 text-center text-gray-400 italic py-6">No media vault folders populated.</p>`;
                 return;
             }
 
@@ -936,9 +907,9 @@
                 const coverImage = assets.length > 0 ? assets[0].url : "https://images.unsplash.com/photo-1513694203232-719a280e022f?w=200";
                 
                 grid.innerHTML += `
-                    <div onclick="openAlbumInspector('${albumName}')" class="bg-gray-50 rounded-xl p-2 border border-gray-200 shadow-3xs cursor-pointer">
-                        <img src="${coverImage}" class="w-full h-16 object-cover rounded-lg bg-gray-200 border">
-                        <p class="font-bold text-[11px] text-gray-800 mt-1 truncate px-1">${albumName}</p>
+                    <div onclick="openAlbumInspector('${albumName}')" class="bg-gray-50 rounded-xl p-2 border border-gray-200 shadow-3xs cursor-pointer hover:border-blue-400 transition-all">
+                        <img src="${coverImage}" class="w-full h-20 object-cover rounded-lg bg-gray-200 border">
+                        <p class="font-bold text-[11px] text-gray-800 mt-1.5 truncate px-1">${albumName}</p>
                         <p class="text-[9px] text-gray-400 px-1">Items (${assets.length})</p>
                     </div>
                 `;
@@ -946,13 +917,13 @@
         }
 
         function triggerCreateAlbum() {
-            const folderName = prompt("Enter a folder title:");
+            const folderName = prompt("Enter a title for your custom vault media folder:");
             if(!folderName) return;
             const cleanTitle = folderName.trim();
             if(!cleanTitle) return;
 
             if(usersDB[currentUserId].albums[cleanTitle]) {
-                alert("Folder directory name already exists.");
+                alert("A file folder with that directory title already exists.");
                 return;
             }
 
@@ -992,14 +963,19 @@
             grid.innerHTML = '';
             
             if(arr.length === 0) {
-                grid.innerHTML = `<p class="col-span-3 text-center text-gray-400 italic text-[11px] py-8">Folder layout empty.</p>`;
+                grid.innerHTML = `<p class="col-span-3 text-center text-gray-400 italic text-[11px] py-8">This folder layout is currently empty.</p>`;
                 return;
             }
 
             arr.forEach((photoObj, index) => {
                 grid.innerHTML += `
-                    <div onclick="openLightbox(${index})" class="aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-3xs cursor-pointer relative group">
+                    <div onclick="openLightbox(${index})" class="aspect-square bg-gray-100 rounded-lg overflow-hidden border border-gray-200 shadow-3xs cursor-pointer hover:opacity-90 transition-all group relative">
                         <img src="${photoObj.url}" class="w-full h-full object-cover">
+                        ${photoObj.caption ? `
+                            <div class="absolute inset-x-0 bottom-0 bg-black/60 p-1 text-[9px] text-white truncate text-center opacity-0 group-hover:opacity-100 transition-all">
+                                ${photoObj.caption}
+                            </div>
+                        ` : ''}
                     </div>
                 `;
             });
@@ -1009,7 +985,7 @@
             const file = event.target.files[0];
             if(!file || !currentOpenAlbumName) return;
 
-            const captionStr = prompt("Provide an optional text description:", "");
+            const captionStr = prompt("Provide an optional description string for your vault asset:", "");
             const cleanCaption = captionStr ? captionStr.trim() : "";
 
             const reader = new FileReader();
@@ -1028,6 +1004,7 @@
             reader.readAsDataURL(file);
         }
 
+        // LIGHTBOX
         function openLightbox(photoIndex) {
             selectedLightboxPhotoIndex = photoIndex;
             const contextId = activeBrowsingTargetKey || currentUserId;
@@ -1035,7 +1012,7 @@
             if(!photoObj) return;
 
             document.getElementById('lightbox-img').src = photoObj.url;
-            document.getElementById('lightbox-caption').innerText = photoObj.caption || "No description assigned.";
+            document.getElementById('lightbox-caption').innerText = photoObj.caption || "No description assigned tracking metadata payload.";
             
             const controlsNode = document.getElementById('lightbox-owner-controls');
             if(!activeBrowsingTargetKey || activeBrowsingTargetKey === currentUserId) controlsNode.classList.remove('hidden');
@@ -1053,7 +1030,7 @@
             if(selectedLightboxPhotoIndex === null || !currentOpenAlbumName) return;
             const targetAsset = usersDB[currentUserId].albums[currentOpenAlbumName][selectedLightboxPhotoIndex];
             
-            const promptValue = prompt("Revise description text:", targetAsset.caption);
+            const promptValue = prompt("Revise description metadata string:", targetAsset.caption);
             if(promptValue === null) return;
             
             targetAsset.caption = promptValue.trim();
@@ -1064,7 +1041,7 @@
 
         function triggerDeletePhoto() {
             if(selectedLightboxPhotoIndex === null || !currentOpenAlbumName) return;
-            if(!confirm("Delete this asset permanently?")) return;
+            if(!confirm("Delete this asset permanently from storage folder?")) return;
 
             usersDB[currentUserId].albums[currentOpenAlbumName].splice(selectedLightboxPhotoIndex, 1);
             commitToDisk();
@@ -1073,6 +1050,7 @@
             updateGlobalUIElements();
         }
 
+        // DIRECTORY HUB & MESSAGING SYSTEM
         function renderPresenceDirectory() {
             const container = document.getElementById('realtime-presence-directory');
             if(!container) return;
@@ -1081,7 +1059,7 @@
 
             const allUsers = Object.values(usersDB);
             if(allUsers.length === 0) {
-                container.innerHTML = `<p class="text-center text-gray-400 italic text-[11px] py-4">No other nodes discovered yet.</p>`;
+                container.innerHTML = `<p class="text-center text-gray-400 italic text-[11px] py-4">No other accounts discovered. Invite others later via custom setup links!</p>`;
                 document.getElementById('online-counter-badge').innerText = `0 Active`;
                 return;
             }
@@ -1092,20 +1070,21 @@
                 if(profile.isOnline) onlineTally++;
 
                 container.innerHTML += `
-                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded-xl border border-gray-100 text-xs">
+                    <div class="flex items-center justify-between p-2 bg-gray-50 rounded-xl border border-gray-100">
                         <div onclick="browseToTargetProfile('${key}')" class="flex items-center space-x-2 cursor-pointer group flex-1 min-w-0 mr-1">
-                            <div class="relative flex-shrink-0">
-                                <img src="${profile.avatar}" class="w-7 h-7 rounded-full object-cover bg-gray-200">
-                                <span class="absolute bottom-0 right-0 w-2 h-2 rounded-full border border-white ${profile.isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
+                            <div class="relative flex-shrink-0 group-hover:opacity-85 transition-opacity">
+                                <img src="${profile.avatar}" class="w-7 h-7 rounded-full object-cover border bg-gray-200">
+                                <span class="absolute bottom-0 right-0 w-2.5 h-2.5 rounded-full border border-white ${profile.isOnline ? 'bg-green-500' : 'bg-gray-400'}"></span>
                             </div>
                             <div class="min-w-0">
-                                <p class="text-xs font-black text-gray-800 truncate">${profile.name} ${isMe ? '<span class="text-[9px] text-blue-500 font-normal">(Me)</span>':''}</p>
+                                <p class="text-xs font-black text-gray-800 truncate group-hover:text-[#1877F2] group-hover:underline">${profile.name} ${isMe ? '<span class="text-[9px] text-blue-500 font-normal">(Me)</span>':''}</p>
+                                <p class="text-[9px] text-gray-400 truncate">${profile.title}</p>
                             </div>
                         </div>
-                        <div class="shrink-0">
+                        <div class="flex items-center space-x-1 shrink-0">
                             ${!isMe ? `
-                                <button onclick="initializeDirectMessage('${key}')" class="text-[9px] bg-white border border-gray-200 text-blue-600 font-black px-2 py-0.5 rounded-md cursor-pointer">Chat</button>
-                            ` : '<span class="text-[9px] text-gray-300 font-black uppercase">Owner</span>'}
+                                <button onclick="initializeDirectMessage('${key}')" class="text-[9px] bg-white hover:bg-blue-50 border border-gray-200 text-blue-600 font-black px-2 py-1 rounded-lg cursor-pointer">Message</button>
+                            ` : '<span class="text-[9px] text-gray-300 font-black uppercase px-1">Owner</span>'}
                         </div>
                     </div>
                 `;
@@ -1119,11 +1098,11 @@
 
             const recipientProfile = usersDB[targetUserId];
             document.getElementById('chat-header-avatar').src = recipientProfile.avatar;
-            document.getElementById('chat-header-title').innerText = `Chat with ${recipientProfile.name}`;
-            document.getElementById('chat-header-status').innerText = recipientProfile.isOnline ? "Active Connection" : "Offline Link Buffer";
+            document.getElementById('chat-header-title').innerText = `Chatting with ${recipientProfile.name}`;
+            document.getElementById('chat-header-status').innerText = recipientProfile.isOnline ? "Active Session" : "Offline Link Buffer Target Mode";
 
             document.getElementById('chat-input').removeAttribute('disabled');
-            document.getElementById('chat-input').placeholder = `Write a private note...`;
+            document.getElementById('chat-input').placeholder = `Write a private note to ${recipientProfile.name}...`;
             document.getElementById('chat-send-btn').removeAttribute('disabled');
 
             const uniqueThreadKey = [currentUserId, activeChatRecipientKey].sort().join('--');
@@ -1146,7 +1125,8 @@
             if(threadHistory.length === 0) {
                 stream.innerHTML = `
                     <div class="text-center py-12 text-gray-400 italic text-xs">
-                        Secure channel open. Say hello to ${usersDB[activeChatRecipientKey].name}!
+                        <i class="fa-solid fa-user-shield text-xl block mb-1 text-gray-300"></i>
+                        Secure link established. Say Hello to ${usersDB[activeChatRecipientKey].name}!
                     </div>
                 `;
                 return;
@@ -1158,19 +1138,19 @@
                 if(myMessage) {
                     let receiptMarkup = `<span class="text-[9px] text-gray-400 ml-1">✓ Sent</span>`;
                     if(msg.status === 'Delivered') receiptMarkup = `<span class="text-[9px] text-blue-400 font-bold ml-1">✓ Delivered</span>`;
-                    else if(msg.status === 'Read') receiptMarkup = `<span class="text-[9px] text-emerald-500 font-bold ml-1">Read</span>`;
+                    else if(msg.status === 'Read') receiptMarkup = `<span class="text-[9px] text-emerald-500 font-bold ml-1"><i class="fa-solid fa-check-double"></i> Read</span>`;
 
                     stream.innerHTML += `
                         <div class="flex flex-col items-end mb-2">
-                            <div class="bg-[#1877F2] text-white text-xs p-2 rounded-xl max-w-[240px] shadow-3xs">${msg.text}</div>
+                            <div class="bg-[#1877F2] text-white text-xs p-2 rounded-xl max-w-xs shadow-3xs">${msg.text}</div>
                             <div class="mt-0.5">${receiptMarkup}</div>
                         </div>
                     `;
                 } else {
                     stream.innerHTML += `
                         <div class="flex justify-start space-x-1.5 items-end mb-2">
-                            <img src="${usersDB[msg.sender].avatar}" onclick="browseToTargetProfile('${msg.sender}')" class="w-5 h-5 rounded-full object-cover bg-gray-100 border">
-                            <div class="bg-white text-gray-800 text-xs p-2 rounded-xl border max-w-[240px] shadow-3xs">${msg.text}</div>
+                            <img src="${usersDB[msg.sender].avatar}" onclick="browseToTargetProfile('${msg.sender}')" class="w-5 h-5 rounded-full object-cover bg-gray-100 border cursor-pointer hover:opacity-80">
+                            <div class="bg-white text-gray-800 text-xs p-2 rounded-xl border max-w-xs shadow-3xs">${msg.text}</div>
                         </div>
                     `;
                 }
@@ -1192,21 +1172,28 @@
             commitToDisk();
             renderChatStream();
 
-            dispatchNotification(activeChatRecipientKey, `<b>${usersDB[currentUserId].name}</b> sent you a private message.`);
+            dispatchNotification(activeChatRecipientKey, `<b>${usersDB[currentUserId].name}</b> sent you a private direct message layout packet.`);
 
             setTimeout(() => {
                 const liveThread = messagesDB[uniqueThreadKey] || [];
                 const target = liveThread.find(m => m.id === msgId);
-                if(target) { target.status = 'Delivered'; commitToDisk(); renderChatStream(); }
+                if(target) {
+                    target.status = 'Delivered'; commitToDisk();
+                    if(activeChatRecipientKey === usersDB[activeChatRecipientKey].id) renderChatStream();
+                }
             }, 800);
 
             setTimeout(() => {
                 const liveThread = messagesDB[uniqueThreadKey] || [];
                 const target = liveThread.find(m => m.id === msgId);
-                if(target) { target.status = 'Read'; commitToDisk(); renderChatStream(); }
+                if(target) {
+                    target.status = 'Read'; commitToDisk();
+                    renderChatStream();
+                }
             }, 2200);
         }
 
+        // GLOBALS & ACTIONS
         function handleSearch(val) {
             const dropdown = document.getElementById('search-dropdown');
             const box = document.getElementById('search-results-box');
@@ -1228,7 +1215,7 @@
             }
             if(matches > 0) dropdown.classList.remove('hidden');
             else {
-                box.innerHTML = `<p class="p-2.5 text-gray-400 italic text-center">No results found.</p>`;
+                box.innerHTML = `<p class="p-2.5 text-gray-400 italic text-center">No matching profiles found.</p>`;
                 dropdown.classList.remove('hidden');
             }
         }
@@ -1286,7 +1273,7 @@
             }
             if(localCoverPicBuffer) usersDB[currentUserId].cover = localCoverPicBuffer;
             
-            usersDB[currentUserId].bio = txtBio || "Welcome to my profile space! Modify this in Settings.";
+            usersDB[currentUserId].bio = txtBio || "Welcome to my profile space! Click settings to modify this statement.";
             usersDB[currentUserId].musicUrl = musicVal;
             
             commitToDisk();
@@ -1297,18 +1284,9 @@
 
         function switchTab(tabName) {
             document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
-            
-            // Sync Desktop Nav Tabs
             document.querySelectorAll('.nav-tab').forEach(el => el.classList.remove('text-[#1877F2]', 'border-b-4', 'border-[#1877F2]'));
-            const dTab = document.getElementById(`tab-${tabName}`);
-            if (dTab) dTab.classList.add('text-[#1877F2]', 'border-b-4', 'border-[#1877F2]');
-            
-            // Sync Mobile Sticky Bar Tabs
-            document.querySelectorAll('.mob-nav-tab').forEach(el => el.classList.replace('text-[#1877F2]', 'text-gray-400'));
-            const mTab = document.getElementById(`mob-tab-${tabName}`);
-            if (mTab) mTab.classList.replace('text-gray-400', 'text-[#1877F2]');
-
             document.getElementById(`content-${tabName}`).classList.remove('hidden');
+            document.getElementById(`tab-${tabName}`).classList.add('text-[#1877F2]', 'border-b-4', 'border-[#1877F2]');
             
             if(tabName === 'messages') {
                 setTimeout(() => {
@@ -1327,14 +1305,12 @@
             if (notifDrop && !notifDrop.contains(e.target)) notifDrop.classList.add('hidden');
         });
 
-        // --- Session Persistence Engine Bootloader ---
-        // Automatically bypasses the login portal wall if a reliable user account key is detected on page refresh
-        document.addEventListener("DOMContentLoaded", function() {
-            if (currentUserId && usersDB[currentUserId]) {
-                usersDB[currentUserId].isOnline = true;
-                initializeSessionState();
+        // Auto check if profile user configuration parameters exist on reload
+        window.onload = function() {
+            if(Object.keys(usersDB).length > 0) {
+                // Keep view hidden until login authenticates
             }
-        });
+        }
     </script>
 </body>
 </html>
