@@ -351,8 +351,8 @@
         let notificationsDB = JSON.parse(localStorage.getItem('two_us_notifications')) || {};
         let storiesDB = JSON.parse(localStorage.getItem('two_us_stories')) || [];
 
-        // Check for active logged-in user key from localStorage or fallback to null
-        let currentUserId = localStorage.getItem('two_us_active_user') || null;
+        // Check for an active session ID in local storage on page bootup
+        let currentUserId = localStorage.getItem('two_us_active_session_id') || null;
         let activeBrowsingTargetKey = null;
         let activeChatRecipientKey = null;
         let currentOpenAlbumName = null;
@@ -369,6 +369,8 @@
             localStorage.setItem('two_us_messages', JSON.stringify(messagesDB));
             localStorage.setItem('two_us_notifications', JSON.stringify(notificationsDB));
             localStorage.setItem('two_us_stories', JSON.stringify(storiesDB));
+            // Keep the active session ID committed to the storage desk
+            localStorage.setItem('two_us_active_session_id', currentUserId || "");
         }
 
         // Listen for first screen gesture to automatically trigger loaded audio streams smoothly
@@ -415,10 +417,9 @@
 
             if(!notificationsDB[newId]) notificationsDB[newId] = [];
 
+            currentUserId = newId;
             commitToDisk();
             alert("Profile registered successfully!");
-            currentUserId = newId;
-            localStorage.setItem('two_us_active_user', newId); // Save session on register
             initializeSessionState();
         }
 
@@ -447,7 +448,6 @@
             if(!notificationsDB[currentUserId]) notificationsDB[currentUserId] = [];
             
             commitToDisk();
-            localStorage.setItem('two_us_active_user', targetUser.id); // Save session on login
             initializeSessionState();
         }
 
@@ -473,11 +473,8 @@
             if(currentUserId && usersDB[currentUserId]) {
                 usersDB[currentUserId].isOnline = false;
             }
-            commitToDisk();
-            
-            localStorage.removeItem('two_us_active_user'); // Clear session on logout
-            
             currentUserId = null;
+            commitToDisk(); // This clears out the active session payload from local storage logs
             activeBrowsingTargetKey = null;
             activeChatRecipientKey = null;
 
@@ -1330,10 +1327,14 @@
             if (notifDrop && !notifDrop.contains(e.target)) notifDrop.classList.add('hidden');
         });
 
-        // Automatically restore session layout if the active user ID is validated on refresh
-        if (currentUserId && usersDB[currentUserId]) {
-            initializeSessionState();
-        }
+        // --- Session Persistence Engine Bootloader ---
+        // Automatically bypasses the login portal wall if a reliable user account key is detected on page refresh
+        document.addEventListener("DOMContentLoaded", function() {
+            if (currentUserId && usersDB[currentUserId]) {
+                usersDB[currentUserId].isOnline = true;
+                initializeSessionState();
+            }
+        });
     </script>
 </body>
 </html>
