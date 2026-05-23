@@ -347,6 +347,9 @@
             localStorage.setItem('two_us_messages', JSON.stringify(messagesDB));
             localStorage.setItem('two_us_notifications', JSON.stringify(notificationsDB));
             localStorage.setItem('two_us_stories', JSON.stringify(storiesDB));
+            if (currentUserId) {
+                localStorage.setItem('two_us_active_session_id', currentUserId);
+            }
         }
 
         function toggleAuthViews(showRegister) {
@@ -379,9 +382,9 @@
 
             if(!notificationsDB[newId]) notificationsDB[newId] = [];
 
+            currentUserId = newId;
             commitToDisk();
             alert("Account setup complete!");
-            currentUserId = newId;
             initializeSessionState();
         }
 
@@ -436,11 +439,12 @@
             if(currentUserId && usersDB[currentUserId]) {
                 usersDB[currentUserId].isOnline = false;
             }
-            commitToDisk();
+            localStorage.removeItem('two_us_active_session_id');
             currentUserId = null;
             activeBrowsingTargetKey = null;
             activeChatRecipientKey = null;
 
+            commitToDisk();
             renderPresenceDirectory();
             document.getElementById('auth-wall').classList.remove('hidden');
         }
@@ -571,10 +575,6 @@
             };
             reader.readAsDataURL(file);
         }
-
-        document.addEventListener("DOMContentLoaded", function() {
-            renderPresenceDirectory();
-        });
 
         function renderStoriesTray() {
             const container = document.getElementById('dynamic-stories-list');
@@ -1305,12 +1305,16 @@
             if (notifDrop && !notifDrop.contains(e.target)) notifDrop.classList.add('hidden');
         });
 
-        // Auto check if profile user configuration parameters exist on reload
+        // SINGLE, UNIFIED SESSION RESTORATION MANAGER ON PAGE LOAD
         window.onload = function() {
-            if(Object.keys(usersDB).length > 0) {
-                // Keep view hidden until login authenticates
+            const savedUserId = localStorage.getItem('two_us_active_session_id');
+            if (savedUserId && usersDB[savedUserId]) {
+                currentUserId = savedUserId;
+                usersDB[currentUserId].isOnline = true;
+                initializeSessionState(); 
             }
-        }
+            renderPresenceDirectory();
+        };
     </script>
 </body>
 </html>
